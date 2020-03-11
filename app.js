@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/11/20, 10:14 PM.
  */
 
 require('dotenv').config();
@@ -9,7 +9,11 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/chatbot', { useNewUrlParser: true, useFindAndModify: true }).then(function() {
+mongoose.connect(process.env.DB, {
+    useNewUrlParser: true,
+    useFindAndModify: true,
+    useUnifiedTopology: true
+}).then(function() {
     console.log('connected');
 }).catch(function(e) {
     console.error(e);
