@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020.
+ * Author: hirosume.
+ * LastModifiedAt: 3/11/20, 10:01 PM.
+ */
+
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');

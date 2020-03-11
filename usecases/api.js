@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020.
+ * Author: hirosume.
+ * LastModifiedAt: 3/11/20, 10:01 PM.
+ */
+
 const axios = require('axios');
 const debug = require('debug')('chatbot:api');
 module.exports.getUserInfo = getUserInfo;

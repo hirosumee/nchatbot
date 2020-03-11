@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020.
+ * Author: hirosume.
+ * LastModifiedAt: 3/11/20, 10:01 PM.
+ */
+
 const { callSendAPI } = require('./api');
 const userModel = require('../models/user');
 const { sendProfileAPI } = require('./api');

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020.
+ * Author: hirosume.
+ * LastModifiedAt: 3/11/20, 10:01 PM.
+ */
+
 const express = require('express');
 const router = express.Router();
 const messagingUsecase = require('../usecases/messaging');
