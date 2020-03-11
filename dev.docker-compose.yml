@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - '27017:27017'
+  #    volumes:
+  #      - db
+#  main:
+#    build:
+#      context: servers/main
+#      dockerfile: ./Dockerfile
+#    working_dir: /usr/src
+#    volumes:
+#      - ./servers/main:/usr/src
+#      - /usr/src/node_modules
+#
+#
+#volumes:
+#  db:
