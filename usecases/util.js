@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:36 AM.
+ * LastModifiedAt: 3/12/20, 11:39 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -171,6 +171,11 @@ async function createPersistentMenu(psid) {
                         'title': 'Rời phòng',
                         'type': 'postback',
                         'payload': '{"subject":"quit"}'
+                    },
+                    {
+                        'title': 'Giới tính',
+                        'type': 'postback',
+                        'payload': '{"subject":"set-gender"}'
                     }
                 ]
             }
