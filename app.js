@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 7:12 PM.
+ * LastModifiedAt: 3/12/20, 7:32 PM.
  */
 
 require('dotenv').config();
@@ -26,9 +26,9 @@ const webhookRouter = require('./routes/webhook');
 const app = express();
 
 app.use(logger('dev'));
+app.use(xhub({ algorithm: 'sha1', secret: process.env.SECRET }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(xhub({ algorithm: 'sha1', secret: process.env.SECRET }));
 app.use(cookieParser());
 
 app.use('/webhook', webhookRouter);
