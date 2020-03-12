@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/12/20, 8:04 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -89,9 +89,9 @@ async function getUser(psid) {
 
 async function createPersistentMenu(psid) {
     return sendProfileAPI(psid, {
-        'get_started': {
-            'payload': '{"subject":"quit"}'
-        },
+        // 'get_started': {
+        //     'payload': '{"subject":"join"}'
+        // },
         'persistent_menu': [
             {
                 'locale': 'default',
