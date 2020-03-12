@@ -1,6 +1,9 @@
 #nChatBot
+
 nChatbot is a funny project that aims to help students entertained during the nCovi-19 festival
+
 ###How to install
+
 - Install node.js
 - Install node dependencies
 ```bash
@@ -18,14 +21,14 @@ $ npm start
 ``` 
 
 ### Features
--[x] match with user's gender
--[x] support setup on facebook's persistent  menu
--[x] message command like: #join #left #cmd
+- [x] match with user's gender
+- [x] support setup on facebook's persistent  menu
+- [x] message command like: #join #left #cmd
 
 And comming up ...
 
--[ ] link account with specific student account
--[ ] report and block user with non-standard behavior
+- [ ] link account with specific student account
+- [ ] report and block user with non-standard behavior
 
 ## License
 
