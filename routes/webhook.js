@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:07 AM.
+ * LastModifiedAt: 3/12/20, 7:10 PM.
  */
 
 const express = require('express');
 const router = express.Router();
 const messagingUsecase = require('../usecases/messaging');
 const postbackUsecase = require('../usecases/postback');
+const debug = require('debug')('chatbot:webhook');
 let VERIFY_TOKEN = process.env.SECRET;
 
 router
@@ -23,7 +24,7 @@ router
             // Checks the mode and token sent is correct
             if (mode === 'subscribe' && token === VERIFY_TOKEN) {
                 // Responds with the challenge token from the request
-                console.log('WEBHOOK_VERIFIED');
+                debug('WEBHOOK_VERIFIED');
                 res.status(200).send(challenge);
             } else {
                 // Responds with '403 Forbidden' if verify tokens do not match
@@ -49,7 +50,7 @@ router
                 // console.log(webhook_event);
                 // Get the sender PSID
                 let sender_psid = webhook_event.sender.id;
-                console.log('Sender PSID: ' + sender_psid);
+                debug('Sender PSID: ' + sender_psid);
 
                 // Check if the event is a message or postback and
                 // pass the event to the appropriate handler function
@@ -59,7 +60,7 @@ router
                         if (!message.isEcho) {
                             if (message.quick_reply) {
                                 const payload = message.quick_reply.payload;
-                                console.log(payload);
+                                debug(payload);
                                 const data = isJson(payload);
                                 if (data) {
                                     return postbackUsecase.procPostback(sender_psid, data);
@@ -75,7 +76,7 @@ router
                 } else if (webhook_event.postback) {
                     // handlePostback(sender_psid, webhook_event.postback);
                     const payload = webhook_event.postback.payload;
-                    console.log(webhook_event.postback);
+                    debug(webhook_event.postback);
                     const data = isJson(payload);
                     if (data) {
                         return postbackUsecase.procPostback(sender_psid, data);
@@ -92,7 +93,6 @@ router
     });
 
 function isJson(str) {
-    console.log(str);
     try {
         return JSON.parse(str);
     } catch (e) {
