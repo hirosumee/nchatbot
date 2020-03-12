@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 5:02 PM.
+ * LastModifiedAt: 3/12/20, 5:46 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -26,6 +26,22 @@ module.exports.sendSetGender = sendSetGender;
 module.exports.sendNotSupportedGenderSetting = sendNotSupportedGenderSetting;
 module.exports.sendWaitToSetGender = sendWaitToSetGender;
 module.exports.sendSetGenderSuccessful = sendSetGenderSuccessful;
+module.exports.sendBlocking = sendBlocking;
+module.exports.sendExceededReportTimes = sendExceededReportTimes;
+module.exports.sendReported = sendReported;
+
+
+async function sendReported(psid) {
+    return sendText(psid, 'Bạn đã report thành công !');
+}
+
+async function sendExceededReportTimes(psid) {
+    return sendText(psid, 'Bạn đã report 2 lần trong ngày hôm nay. Vui lòng đợi ngày mai !!');
+}
+
+async function sendBlocking(psid, blockDetail) {
+    return sendText(psid, 'Bạn đã bị chặn khỏi dịch vụ ! Với lý do : ' + blockDetail);
+}
 
 async function sendLeaveConversation(psid, conversation) {
     const friendId = getFriendId(psid, conversation);
@@ -98,6 +114,7 @@ function sendCmdList(psid) {
 - Rời phòng: #quit
 - Danh sách lệnh: #cmd
 - Đặt giới tính: #gender
+- Report: #report
     `);
 }
 
@@ -182,6 +199,11 @@ async function createPersistentMenu(psid) {
                         'title': 'Giới tính',
                         'type': 'postback',
                         'payload': '{"subject":"gender"}'
+                    },
+                    {
+                        'title': 'Báo cáo hành vi không chuẩn mực',
+                        'type': 'postback',
+                        'payload': '{"subject":"report"}'
                     }
                 ]
             }

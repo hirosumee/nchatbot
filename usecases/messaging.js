@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 4:59 PM.
+ * LastModifiedAt: 3/12/20, 5:44 PM.
  */
 
 const conversationModel = require('../models/conversation');
+const { sendBlocking } = require('./util');
 const { sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
 const { quit } = require('./postback');
@@ -26,6 +27,15 @@ async function procTextMessage(psid, message) {
         debug('cant get user info');
         return sendUserNotFound(psid);
     }
+    //
+    if (user.shouldBlock()) {
+        await user.blockMe('Bị báo cáo 4 lần');
+    }
+    if (user.isBlock()) {
+        return sendBlocking(psid, user.blockDetail);
+    }
+
+    //
     const text = message.text.toLowerCase();
     if (text === '#join') {
         return join(psid);
@@ -35,6 +45,8 @@ async function procTextMessage(psid, message) {
         return sendCmdList(psid);
     } else if (text === '#gender') {
         return sendSetGender(psid);
+    } else if (text === '#report') {
+        return report(user);
     }
     const conversation = await conversationModel.getAliveConversation(psid);
     if (!conversation) {

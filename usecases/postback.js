@@ -1,11 +1,14 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:48 AM.
+ * LastModifiedAt: 3/12/20, 5:50 PM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendReported } = require('./util');
+const { getFriendId } = require('./util');
+const { sendExceededReportTimes } = require('./util');
 const { sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
 const { sendSetGenderSuccessful } = require('./util');
@@ -19,7 +22,7 @@ const { getUser } = require('./util');
 const { sendLeaveConversation, sendConversationNotFound } = require('./util');
 
 
-module.exports.procPostback = function(psid, payload) {
+module.exports.procPostback = async function(psid, payload) {
     const subject = payload.subject;
     switch (subject) {
         case 'quit': {
@@ -37,10 +40,31 @@ module.exports.procPostback = function(psid, payload) {
         case 'cmd': {
             return sendCmdList(psid);
         }
+        case 'report': {
+            const user = await getUser(psid);
+            if (user) {
+                return report(user);
+            }
+        }
     }
 };
 module.exports.join = join;
 module.exports.quit = quit;
+module.exports.report = report;
+
+async function report(user) {
+    const conversation = await conversationModel.getAliveConversation(user.psid);
+    if (!conversation) {
+        return sendConversationNotFound(user.psid);
+    }
+    if (await user.canReport()) {
+        const friendId = getFriendId(user.psid, conversation.members);
+        await userModel.findAndReport(friendId);
+        return await sendReported(user.psid);
+    } else {
+        return sendExceededReportTimes(user.psid);
+    }
+}
 
 const twentyTwoHour = 24 * 60 * 60 * 1000;
 

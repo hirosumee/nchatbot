@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 8:13 AM.
+ * LastModifiedAt: 3/12/20, 6:10 PM.
  */
 
 require('dotenv').config();
@@ -9,14 +9,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const debug = require('debug')('chatbot:app');
 mongoose.connect(process.env.DB, {
     useNewUrlParser: true,
     useFindAndModify: false,
     useUnifiedTopology: true
 }).then(function() {
-    console.log('connected');
+    debug('connected');
 }).catch(function(e) {
-    console.error(e);
+    debug(e);
 });
 
 const webhookRouter = require('./routes/webhook');
