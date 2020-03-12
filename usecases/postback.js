@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:43 AM.
+ * LastModifiedAt: 3/12/20, 11:46 AM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -72,7 +72,7 @@ async function join(psid) {
             return sendAlreadyConversation(psid);
         }
         await userModel.setQueue(psid);
-        const friend = await userModel.findFriend(psid);
+        const friend = await userModel.findFriend(psid, user.gender);
         if (friend) {
             const members = [user.psid, friend.psid];
             for (let psid of members) {
