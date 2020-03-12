@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:54 AM.
+ * LastModifiedAt: 3/12/20, 11:05 AM.
  */
 
 const express = require('express');
@@ -57,6 +57,14 @@ router
                     const message = webhook_event.message;
                     if (message.text) {
                         if (!message.isEcho) {
+                            if (message.quick_reply) {
+                                const payload = message.quick_reply.payload;
+                                console.log(postback);
+                                const data = isJson(payload);
+                                if (data) {
+                                    return postbackUsecase.procPostback(sender_psid, data);
+                                }
+                            }
                             return messagingUsecase.procText(sender_psid, message);
                         }
                     } else if (message.attachments) {

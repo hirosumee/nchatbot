@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:48 AM.
+ * LastModifiedAt: 3/12/20, 11:03 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -60,11 +60,13 @@ async function sendFriendNotFound(psid) {
 }
 
 async function sendUserNotFound(psid) {
-    return sendText(psid, 'Có lỗi xảy ra: Không khởi tạo được tài khoản !');
+    // return sendText(psid, 'Có lỗi xảy ra: Không khởi tạo được tài khoản !');
+    return sendCmdList(psid);
 }
 
 async function sendConversationNotFound(psid) {
-    return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
+    // return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
+    return sendCmdList(psid);
 }
 
 function sendNotSupportedGenderSetting(psid) {
