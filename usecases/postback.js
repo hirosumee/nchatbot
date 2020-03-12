@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:06 AM.
+ * LastModifiedAt: 3/12/20, 11:10 AM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -40,7 +40,7 @@ async function setGender(psid, data) {
     const user = await getUser(psid);
     if (user) {
         if (~['male', 'female', 'unknown'].indexOf(data)) {
-            if (user.lastSetGender && Date.now() - twentyTwoHour < new Date(user.lastSetGender).getTime()) {
+            if (!user.lastSetGender || Date.now() - twentyTwoHour < new Date(user.lastSetGender).getTime()) {
                 user.lastSetGender = new Date();
                 user.gender = data;
                 await user.save();
