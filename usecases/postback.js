@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:14 AM.
+ * LastModifiedAt: 3/12/20, 11:33 AM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendCmdList } = require('./util');
 const { sendSetGenderSuccessful } = require('./util');
 const { sendWaitToSetGender } = require('./util');
 const { sendNotSupportedGenderSetting } = require('./util');
@@ -28,6 +29,9 @@ module.exports.procPostback = function(psid, payload) {
         }
         case 'set-gender': {
             return setGender(psid, payload.data);
+        }
+        case 'cmd': {
+            return sendCmdList(psid);
         }
     }
 };
@@ -84,7 +88,7 @@ async function quit(psid) {
     const conversation = await conversationModel.getAliveConversation(psid);
     if (conversation) {
         await conversationModel.leaveConversation(conversation._id);
-        return sendLeaveConversation(psid);
+        return sendLeaveConversation(psid, conversation);
     } else {
         return sendConversationNotFound(psid);
     }

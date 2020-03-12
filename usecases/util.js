@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:14 AM.
+ * LastModifiedAt: 3/12/20, 11:36 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -26,7 +26,11 @@ module.exports.sendNotSupportedGenderSetting = sendNotSupportedGenderSetting;
 module.exports.sendWaitToSetGender = sendWaitToSetGender;
 module.exports.sendSetGenderSuccessful = sendSetGenderSuccessful;
 
-async function sendLeaveConversation(psid) {
+async function sendLeaveConversation(psid, conversation) {
+    const friendId = getFriendId(psid, conversation);
+    if (friendId) {
+        await sendText(friendId, 'Bạn của bạn đã rời phòng !');
+    }
     return sendText(psid, 'Bạn đã rời phòng');
 }
 
@@ -150,13 +154,13 @@ async function getUser(psid) {
 
 async function createPersistentMenu(psid) {
     return sendProfileAPI(psid, {
-        // 'get_started': {
-        //     'payload': '{"subject":"join"}'
-        // },
+        'get_started': {
+            'payload': '{"subject":"cmd"}'
+        },
         'persistent_menu': [
             {
                 'locale': 'default',
-                'composer_input_disabled': true,
+                'composer_input_disabled': false,
                 'call_to_actions': [
                     {
                         'title': 'Tìm kiếm phòng',
