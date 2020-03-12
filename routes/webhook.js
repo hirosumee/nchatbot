@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:37 PM.
+ * LastModifiedAt: 3/12/20, 10:42 PM.
  */
 
 const express = require('express');
@@ -34,7 +34,7 @@ router
             res.status(404).send('NOT VERIFIED');
         }
     })
-    .post('/', function(req, res) {
+    .post('/', async function(req, res) {
         let body = req.body;
         if (!req.isXHubValid()) {
             debug('Warning - request header X-Hub-Signature not present or invalid');
@@ -43,11 +43,11 @@ router
         // Checks this is an event from a page subscription
         if (body.object === 'page') {
             // Iterates over each entry - there may be multiple if batched
-            body.entry.forEach(function(entry) {
+            for (let entry of body.entry) {
                 // Gets the message. entry.messaging is an array, but
                 // will only ever contain one message, so we get index 0
                 if (!entry.messaging) {
-                    return;
+                    continue;
                 }
                 let webhook_event = entry.messaging[0];
                 // console.log(webhook_event);
@@ -66,14 +66,15 @@ router
                                 // debug(payload);
                                 const data = isJson(payload);
                                 if (data) {
-                                    return postbackUsecase.procPostback(sender_psid, data);
+                                    await postbackUsecase.procPostback(sender_psid, data);
+                                    continue;
                                 }
                             }
-                            return messagingUsecase.procText(sender_psid, message);
+                            await messagingUsecase.procText(sender_psid, message);
                         }
                     } else if (message.attachments) {
                         if (!message.isEcho) {
-                            return messagingUsecase.procAttachment(sender_psid, message.attachments);
+                            await messagingUsecase.procAttachment(sender_psid, message.attachments);
                         }
                     }
                 } else if (webhook_event.postback) {
@@ -82,10 +83,10 @@ router
                     // debug(webhook_event.postback);
                     const data = isJson(payload);
                     if (data) {
-                        return postbackUsecase.procPostback(sender_psid, data);
+                        await postbackUsecase.procPostback(sender_psid, data);
                     }
                 }
-            });
+            }
 
             // Returns a '200 OK' response to all requests
             res.status(200).send('EVENT_RECEIVED');
