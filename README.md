@@ -11,9 +11,10 @@ $ npm install
 ```
 - Create a .env file with following fields
 ```.dotenv
-SECRET=*
-TOKEN=*
-DB=*
+VERIFY_TOKEN=*  #webook veify token
+SECRET=*        #facebook app secretkey
+TOKEN=*         #fanpage token
+DB=*            #mongodb connection string
 ```
 - Start server
 ```bash
