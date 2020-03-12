@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 7:10 PM.
+ * LastModifiedAt: 3/12/20, 7:23 PM.
  */
 
 const express = require('express');
@@ -9,7 +9,7 @@ const router = express.Router();
 const messagingUsecase = require('../usecases/messaging');
 const postbackUsecase = require('../usecases/postback');
 const debug = require('debug')('chatbot:webhook');
-let VERIFY_TOKEN = process.env.SECRET;
+let VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
 router
     .get('/', function(req, res) {
@@ -36,7 +36,10 @@ router
     })
     .post('/', function(req, res) {
         let body = req.body;
-
+        if (!req.isXHubValid()) {
+            debug('Warning - request header X-Hub-Signature not present or invalid');
+            return res.sendStatus(401);
+        }
         // Checks this is an event from a page subscription
         if (body.object === 'page') {
             // Iterates over each entry - there may be multiple if batched
