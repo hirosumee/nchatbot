@@ -1,8 +1,8 @@
-#nChatBot
+# nChatBot
 
 nChatbot is a funny project that aims to help students entertained during the nCovi-19 festival
 
-###How to install
+### How to install
 
 - Install node.js
 - Install node dependencies
