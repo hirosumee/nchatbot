@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:03 AM.
+ * LastModifiedAt: 3/12/20, 11:14 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -92,7 +92,7 @@ function sendCmdList(psid) {
 - Tìm phòng: #join
 - Rời phòng: #quit
 - Danh sách lệnh: #cmd
-- Đặt lại giới tính: #gender
+- Đặt giới tính: #gender
     `);
 }
 
