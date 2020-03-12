@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:20 PM.
+ * LastModifiedAt: 3/12/20, 10:22 AM.
  */
 
 const conversationModel = require('../models/conversation');
+const { sendSetGender } = require('./util');
+const { sendCmdList } = require('./util');
 const { quit } = require('./postback');
 const { join } = require('./postback');
 const { callSendAPI } = require('./api');
@@ -29,6 +31,10 @@ async function procTextMessage(psid, message) {
         return join(psid);
     } else if (text === '#quit') {
         return quit(psid);
+    } else if (text === '#cmd') {
+        return sendCmdList(psid);
+    } else if (text === '#gender') {
+        return sendSetGender(psid);
     }
     const conversation = await conversationModel.getAliveConversation(psid);
     if (!conversation) {

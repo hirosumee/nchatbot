@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 8:04 AM.
+ * LastModifiedAt: 3/12/20, 10:39 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -20,6 +20,11 @@ module.exports.sendIsQueueing = sendIsQueueing;
 module.exports.sendJoined = sendJoined;
 module.exports.createPersistentMenu = createPersistentMenu;
 module.exports.sendAlreadyConversation = sendAlreadyConversation;
+module.exports.sendCmdList = sendCmdList;
+module.exports.sendSetGender = sendSetGender;
+module.exports.sendNotSupportedGenderSetting = sendNotSupportedGenderSetting;
+module.exports.sendWaitToSetGender = sendWaitToSetGender;
+module.exports.sendSetGenderSuccessful = sendSetGenderSuccessful;
 
 async function sendLeaveConversation(psid) {
     return sendText(psid, 'Bạn đã rời phòng');
@@ -59,7 +64,60 @@ async function sendUserNotFound(psid) {
 }
 
 async function sendConversationNotFound(psid) {
-    return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi ...');
+    return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
+}
+
+function sendNotSupportedGenderSetting(psid) {
+    return sendText(psid, 'Có vẻ giới tính bạn chọn chưa được hỗ trợ');
+}
+
+function sendWaitToSetGender(psid) {
+    return sendText(psid, 'Bạn đã cài đặt giới tính trong vòng 24h qua . ');
+}
+
+function sendSetGenderSuccessful(psid, gender) {
+    let nGender = 'Không xác định';
+    if (gender === 'male') {
+        nGender = 'Nam';
+    } else if (gender === 'female') {
+        nGender = 'Nữ';
+    }
+    return sendText(psid, 'Đặt lại giới tính thành công. Hiện tại giới tính của bạn là : ' + nGender);
+}
+
+function sendCmdList(psid) {
+    return sendText(psid, `
+        - Tìm phòng: #join
+        - Rời phòng: #quit
+        - Danh sách lệnh: #cmd
+    `);
+}
+
+const genderBody = {
+    text: 'Chọn giới tính của bạn !. Lưu ý bạn chỉ có thể đổi giới tính 24h/lần',
+    'quick_replies': [
+        {
+            'content_type': 'text',
+            'title': 'Nam',
+            'payload': '{"subject":"set-gender","data":"male"}',
+            'image_url': 'https://ak4.picdn.net/shutterstock/videos/1008672844/thumb/5.jpg'
+        }, {
+            'content_type': 'text',
+            'title': 'Nữ',
+            'payload': '{"subject":"set-gender","data":"female"}',
+            'image_url': 'https://ak4.picdn.net/shutterstock/videos/1021780084/thumb/8.jpg'
+        },
+        {
+            'content_type': 'text',
+            'title': 'Không xác định',
+            'payload': '{"subject":"set-gender","data":"unknown"}',
+            'image_url': 'https://cdn1.iconfinder.com/data/icons/ui-set-6/100/Question_Mark-512.png'
+        }
+    ]
+};
+
+function sendSetGender(psid) {
+    return callSendAPI(psid, genderBody);
 }
 
 async function sendAlreadyConversation(psid) {

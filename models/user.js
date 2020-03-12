@@ -1,17 +1,25 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/12/20, 10:40 AM.
  */
 
 const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
     psid: String,
     name: String,
-    gender: String,
+    gender: {
+        type: String,
+        default: 'unknown'
+    },
+    lastSetGender: Date,
     queuing: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    block: {
+        default: false,
+        type: Boolean
     }
 }, { timestamps: true });
 schema.statics.firstOrCreate = async function(payload) {

@@ -1,11 +1,14 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/12/20, 10:40 AM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendSetGenderSuccessful } = require('./util');
+const { sendWaitToSetGender } = require('./util');
+const { sendNotSupportedGenderSetting } = require('./util');
 const { sendAlreadyConversation } = require('./util');
 const { sendJoined } = require('./util');
 const { sendIsQueueing } = require('./util');
@@ -23,10 +26,35 @@ module.exports.procPostback = function(psid, payload) {
         case 'join': {
             return join(psid);
         }
+        case 'set-gender': {
+            return setGender(psid, payload.data);
+        }
     }
 };
 module.exports.join = join;
 module.exports.quit = quit;
+
+const twentyTwoHour = 24 * 60 * 60 * 1000;
+
+async function setGender(psid, data) {
+    const user = await getUser(psid);
+    if (user) {
+        if (~['male', 'female', 'unknown'].indexOf(data)) {
+            if (user.lastSetGender && Date.now() - twentyTwoHour < new Date(user.lastSetGender).getTime()) {
+                user.lastSetGender = new Date();
+                user.gender = data;
+                await user.save();
+                await sendSetGenderSuccessful(psid, data);
+            } else {
+                await sendWaitToSetGender(psid);
+            }
+        } else {
+            return sendNotSupportedGenderSetting(psid);
+        }
+    } else {
+        return sendUserNotFound(psid);
+    }
+}
 
 async function join(psid) {
     const user = await getUser(psid);
