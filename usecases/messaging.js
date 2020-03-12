@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 6:14 PM.
+ * LastModifiedAt: 3/12/20, 6:29 PM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -72,6 +72,7 @@ async function procAttachMessage(psid, attachments) {
         return sendFriendNotFound(psid);
     }
     for (let attachment of attachments) {
+        debug(attachment);
         if (attachment.sticker_id) {
             delete attachment.sticker_id;
         }

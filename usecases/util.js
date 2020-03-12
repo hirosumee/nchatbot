@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 6:17 PM.
+ * LastModifiedAt: 3/12/20, 6:27 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -86,8 +86,8 @@ async function sendUserNotFound(psid) {
 }
 
 async function sendConversationNotFound(psid) {
-    return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
-    // return sendCmdList(psid);
+    // return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
+    return sendCmdList(psid);
 }
 
 function sendNotSupportedGenderSetting(psid) {
@@ -200,11 +200,11 @@ async function createPersistentMenu(psid) {
                         'type': 'postback',
                         'payload': '{"subject":"gender"}'
                     },
-                    {
-                        'title': 'Báo cáo hành vi không chuẩn mực',
-                        'type': 'postback',
-                        'payload': '{"subject":"report"}'
-                    }
+                    // {
+                    //     'title': 'Báo cáo hành vi không chuẩn mực',
+                    //     'type': 'postback',
+                    //     'payload': '{"subject":"report"}'
+                    // }
                 ]
             }
         ]
