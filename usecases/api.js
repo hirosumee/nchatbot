@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/12/20, 4:56 PM.
  */
 
 const axios = require('axios');
@@ -16,10 +16,9 @@ async function getUserInfo(user_psid) {
         let resp = await axios({
             baseURL: 'https://graph.facebook.com',
             method: 'GET',
-            url: '/v3.1/' + user_psid,
+            url: '/v6.0/' + user_psid,
             params: {
-                access_token: token,
-                fields: 'id,name,first_name,last_name,profile_pic,gender'
+                access_token: token
             }
         });
         return resp.data;

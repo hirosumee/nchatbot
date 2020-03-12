@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:43 AM.
+ * LastModifiedAt: 3/12/20, 4:56 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -146,7 +146,11 @@ async function getUser(psid) {
         } else {
             return undefined;
         }
-        await createPersistentMenu(psid);
+        try {
+            await createPersistentMenu(psid);
+        } catch (e) {
+            console.error(e);
+        }
     }
     return user;
 }
