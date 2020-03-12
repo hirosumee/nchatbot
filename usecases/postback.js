@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:33 AM.
+ * LastModifiedAt: 3/12/20, 11:43 AM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
 const { sendSetGenderSuccessful } = require('./util');
 const { sendWaitToSetGender } = require('./util');
@@ -26,6 +27,9 @@ module.exports.procPostback = function(psid, payload) {
         }
         case 'join': {
             return join(psid);
+        }
+        case 'gender': {
+            return sendSetGender(psid);
         }
         case 'set-gender': {
             return setGender(psid, payload.data);
