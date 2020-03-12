@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 5:00 PM.
+ * LastModifiedAt: 3/12/20, 5:02 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -144,7 +144,7 @@ async function getUser(psid) {
         const info = await getUserInfo(psid);
         debug(info);
         if (info) {
-            user = await userModel.create({ psid, info });
+            user = await userModel.create({ psid, ...info });
         } else {
             return undefined;
         }
