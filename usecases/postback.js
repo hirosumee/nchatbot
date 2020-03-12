@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:40 AM.
+ * LastModifiedAt: 3/12/20, 11:06 AM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -83,7 +83,6 @@ async function join(psid) {
 async function quit(psid) {
     const conversation = await conversationModel.getAliveConversation(psid);
     if (conversation) {
-        console.log(conversation);
         await conversationModel.leaveConversation(conversation._id);
         return sendLeaveConversation(psid);
     } else {

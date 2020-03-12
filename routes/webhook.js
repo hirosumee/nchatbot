@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:05 AM.
+ * LastModifiedAt: 3/12/20, 11:07 AM.
  */
 
 const express = require('express');
@@ -59,7 +59,7 @@ router
                         if (!message.isEcho) {
                             if (message.quick_reply) {
                                 const payload = message.quick_reply.payload;
-                                console.log(postback);
+                                console.log(payload);
                                 const data = isJson(payload);
                                 if (data) {
                                     return postbackUsecase.procPostback(sender_psid, data);
