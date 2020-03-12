@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:01 PM.
+ * LastModifiedAt: 3/12/20, 10:51 AM.
  */
 
 const express = require('express');
@@ -83,6 +83,7 @@ router
     });
 
 function isJson(str) {
+    console.log(str);
     try {
         return JSON.parse(str);
     } catch (e) {
