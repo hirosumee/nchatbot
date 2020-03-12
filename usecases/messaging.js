@@ -1,15 +1,13 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 5:44 PM.
+ * LastModifiedAt: 3/12/20, 6:14 PM.
  */
 
 const conversationModel = require('../models/conversation');
-const { sendBlocking } = require('./util');
-const { sendSetGender } = require('./util');
+const { sendBlocking, sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
-const { quit } = require('./postback');
-const { join } = require('./postback');
+const { join, report, quit } = require('./postback');
 const { callSendAPI } = require('./api');
 const { forwardTextMessage } = require('./util');
 const { sendFriendNotFound } = require('./util');
