@@ -1,13 +1,16 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 11:46 AM.
+ * LastModifiedAt: 3/12/20, 11:57 AM.
  */
 
 const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
     psid: String,
     name: String,
+    first_name: String,
+    last_name: String,
+    profile_pic: String,
     gender: {
         type: String,
         default: 'unknown'
