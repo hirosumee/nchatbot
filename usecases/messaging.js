@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:22 AM.
+ * LastModifiedAt: 3/12/20, 4:59 PM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -16,7 +16,7 @@ const { getFriendId } = require('./util');
 const { sendConversationNotFound } = require('./util');
 const { sendUserNotFound } = require('./util');
 const { getUser } = require('./util');
-const debug = require('debug')('info:messaging');
+const debug = require('debug')('chatbot:messaging');
 module.exports.procText = procTextMessage;
 module.exports.procAttachment = procAttachMessage;
 
