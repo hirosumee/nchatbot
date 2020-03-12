@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/11/20, 10:14 PM.
+ * LastModifiedAt: 3/12/20, 8:13 AM.
  */
 
 require('dotenv').config();
@@ -11,7 +11,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB, {
     useNewUrlParser: true,
-    useFindAndModify: true,
+    useFindAndModify: false,
     useUnifiedTopology: true
 }).then(function() {
     console.log('connected');
