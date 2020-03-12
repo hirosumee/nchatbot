@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 7:32 PM.
+ * LastModifiedAt: 3/12/20, 10:37 PM.
  */
 
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+// const logger = require('morgan');
 const mongoose = require('mongoose');
 const debug = require('debug')('chatbot:app');
 const xhub = require('express-x-hub');
@@ -25,7 +25,7 @@ const webhookRouter = require('./routes/webhook');
 
 const app = express();
 
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(xhub({ algorithm: 'sha1', secret: process.env.SECRET }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

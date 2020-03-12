@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 7:23 PM.
+ * LastModifiedAt: 3/12/20, 10:37 PM.
  */
 
 const express = require('express');
@@ -63,7 +63,7 @@ router
                         if (!message.isEcho) {
                             if (message.quick_reply) {
                                 const payload = message.quick_reply.payload;
-                                debug(payload);
+                                // debug(payload);
                                 const data = isJson(payload);
                                 if (data) {
                                     return postbackUsecase.procPostback(sender_psid, data);
@@ -79,7 +79,7 @@ router
                 } else if (webhook_event.postback) {
                     // handlePostback(sender_psid, webhook_event.postback);
                     const payload = webhook_event.postback.payload;
-                    debug(webhook_event.postback);
+                    // debug(webhook_event.postback);
                     const data = isJson(payload);
                     if (data) {
                         return postbackUsecase.procPostback(sender_psid, data);

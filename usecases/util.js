@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 6:27 PM.
+ * LastModifiedAt: 3/12/20, 10:38 PM.
  */
 
 const { callSendAPI } = require('./api');
 const userModel = require('../models/user');
 const { sendProfileAPI } = require('./api');
 const { getUserInfo } = require('./api');
-const debug = require('debug')('chatbot:util');
+// const debug = require('debug')('chatbot:util');
 module.exports.getUser = getUser;
 module.exports.sendText = sendText;
 module.exports.sendLeaveConversation = sendLeaveConversation;
@@ -159,7 +159,7 @@ async function getUser(psid) {
     let user = await userModel.findOne({ psid });
     if (!user) {
         const info = await getUserInfo(psid);
-        debug(info);
+        // debug(info);
         if (info) {
             user = await userModel.create({ psid, ...info });
         } else {
