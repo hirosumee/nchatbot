@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 8:51 PM.
+ * LastModifiedAt: 3/14/20, 9:30 PM.
  */
 
 const mongoose = require('mongoose');
@@ -59,7 +59,9 @@ schema.statics.firstOrCreate = async function(payload) {
     if (!user) {
         user = await this.create(payload);
     }
-    map.set(psid, user);
+    if(user) {
+        map.set(psid, user);
+    }
     return user;
 };
 schema.statics.setQueue = function(psid) {
