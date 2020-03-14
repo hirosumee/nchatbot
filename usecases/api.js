@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 3:56 PM.
+ * LastModifiedAt: 3/14/20, 9:57 PM.
  */
 
 const axios = require('axios');
@@ -80,8 +80,7 @@ async function callSendAPI(sender_psid, response) {
             // debug('sent to facebook :', sender_psid);
         })
         .catch(function(err) {
-            debug(err);
-            debug(err.response);
+            debug(err.response.data);
         });
 }
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 9:50 PM.
+ * LastModifiedAt: 3/14/20, 9:56 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -183,7 +183,7 @@ async function sendAlreadyConversation(psid) {
 
 async function sendJoined(psids) {
     for (let psid of psids) {
-        await sendText(psid, 'Đã tìm thấy phòng. Chào nhau đi nào !!');
+        await sendText(psid, 'Tìm thấy nhau rồi. Chào nhau đi nào !!');
     }
 }
 
