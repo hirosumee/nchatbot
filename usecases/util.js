@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 10:28 PM.
+ * LastModifiedAt: 3/14/20, 11:05 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -33,14 +33,19 @@ module.exports.sendReported = sendReported;
 module.exports.sendReadStatus = sendReadStatus;
 module.exports.sendUnQueued = sendUnQueued;
 
-async function sendButtons(psid, text, ...buttons) {
+async function sendButtons(psid, title, subtitle, ...buttons) {
     return callSendAPI(psid, {
         attachment: {
             type: 'template',
             payload: {
-                template_type: 'button',
-                text,
-                buttons
+                template_type: 'generic',
+                elements: [
+                    {
+                        title,
+                        subtitle,
+                        buttons
+                    }
+                ]
             }
         }
     });
@@ -68,9 +73,9 @@ async function sendLeaveConversation(psid, conversation) {
         payload: '{"subject":"join"}'
     };
     if (friendId) {
-        await sendButtons(friendId, 'Đối phương đã rời phòng !', button);
+        await sendButtons(friendId, 'Đối phương đã rời phòng !', '', button);
     }
-    return sendButtons(psid, 'Bạn đã rời phòng', button);
+    return sendButtons(psid, 'Bạn đã rời phòng', '', button);
 }
 
 async function sendText(psid, message) {
@@ -97,7 +102,7 @@ async function sendUnQueued(psid) {
         type: 'postback',
         payload: '{"subject":"join"}'
     };
-    return sendButtons(psid, 'Bạn đã rời hàng chờ.', button);
+    return sendButtons(psid, 'Bạn đã rời hàng chờ.', 'Bạn chỉ có thể tìm bạn khi đang ở trong hàng chờ', button);
 }
 async function sendIsQueueing(psid) {
     const button = {
@@ -105,7 +110,7 @@ async function sendIsQueueing(psid) {
         type: 'postback',
         payload: '{"subject":"un-queue"}'
     };
-    return sendButtons(psid, 'Bạn đã được đưa vào hàng chờ', button);
+    return sendButtons(psid, 'Bạn đã được đưa vào hàng chờ', '', button);
 }
 
 async function sendFriendNotFound(psid) {
@@ -123,7 +128,7 @@ async function sendConversationNotFound(psid) {
         type: 'postback',
         payload: '{"subject":"join"}'
     };
-    return sendButtons(psid, 'Bạn không ở phòng nào !', button);
+    return sendButtons(psid, 'Bạn không ở phòng nào !', 'Hãy bắt đầu trò truyện với lệnh #join', button);
     // return sendCmdList(psid);
 }
 
@@ -191,7 +196,7 @@ async function sendAlreadyConversation(psid) {
         type: 'postback',
         payload: '{"subject":"quit"}'
     };
-    return sendButtons(psid, 'Bạn đã ở trong phòng khác .', button);
+    return sendButtons(psid, 'Bạn đã ở trong phòng khác .', 'Rời phòng cũ trước tìm bạn mới ', button);
 }
 
 async function sendJoined(psids) {
