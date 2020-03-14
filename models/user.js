@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 9:50 PM.
+ * LastModifiedAt: 3/14/20, 10:00 PM.
  */
 
 const mongoose = require('mongoose');
@@ -63,17 +63,18 @@ schema.statics.setQueue = function(psid) {
 schema.statics.setNotQueue = function(psid) {
     return this.findOneAndUpdate({ psid }, { queuing: false }).exec();
 };
-schema.statics.findFriend = function(psid, gender) {
+schema.statics.findFriend = async function(psid, gender) {
     let genderQuery = {};
     if (gender === 'male') {
         genderQuery.gender = 'female';
     } else if (gender === 'female') {
         genderQuery.gender = 'male';
     }
-    return this.find({ psid: { $ne: psid }, queuing: true, block: false, ...genderQuery })
+    const resp = await this.find({ psid: { $ne: psid }, queuing: true, block: false, ...genderQuery })
         .sort({ updatedAt: -1 })
         .limit(1)
         .exec();
+    return resp[0];
 };
 schema.statics.findAndReport = async function(psid) {
     const user = await this.findOne({ psid });
