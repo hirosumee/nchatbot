@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 9:57 PM.
+ * LastModifiedAt: 3/14/20, 10:45 PM.
  */
 
 const axios = require('axios');
@@ -49,26 +49,35 @@ async function callSendActionAPI(sender_psid, sender_action) {
     })
         .then(function() {
             debug('sent to facebook :', sender_psid);
+            return true;
         })
         .catch(function(err) {
             debug(err);
             debug(err.response);
+            return err.response.data.error.code;
         });
 }
 
-async function callSendAPI(sender_psid, response) {
+async function callSendAPI(recipient_psid, response, depth = 0) {
+    if (depth > 1) {
+        return 5000;
+    }
     const token = process.env.TOKEN;
     // Construct the message body
     let request_body = {
         recipient: {
-            id: sender_psid
+            id: recipient_psid
         },
         message: response,
         webhook: true
     };
+    if (depth !== 0) {
+        request_body.messaging_type = 'MESSAGE_TAG';
+        request_body.tag = 'CONFIRMED_EVENT_UPDATE';
+    }
     // debug('try to send message to :', sender_psid);
     // Send the HTTP request to the Messenger Platform
-    axios({
+    return axios({
         baseURL: 'https://graph.facebook.com/v2.6/me/messages',
         params: {
             access_token: token
@@ -78,9 +87,17 @@ async function callSendAPI(sender_psid, response) {
     })
         .then(function() {
             // debug('sent to facebook :', sender_psid);
+            return 0;
         })
         .catch(function(err) {
-            debug(err.response.data);
+            let error = err.response.data.error;
+            debug(error);
+            debug(request_body);
+            if (error.code === 10) {
+                //resend
+                return callSendAPI(token, recipient_psid, response, depth + 1);
+            }
+            return err.response.data.error.code;
         });
 }
 
