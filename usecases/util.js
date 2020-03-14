@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 9:56 PM.
+ * LastModifiedAt: 3/14/20, 10:28 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -31,6 +31,7 @@ module.exports.sendBlocking = sendBlocking;
 module.exports.sendExceededReportTimes = sendExceededReportTimes;
 module.exports.sendReported = sendReported;
 module.exports.sendReadStatus = sendReadStatus;
+module.exports.sendUnQueued = sendUnQueued;
 
 async function sendButtons(psid, text, ...buttons) {
     return callSendAPI(psid, {
@@ -62,12 +63,12 @@ async function sendBlocking(psid, blockDetail) {
 async function sendLeaveConversation(psid, conversation) {
     const friendId = getFriendId(psid, conversation);
     const button = {
-        title: 'Tìm tiếp :v',
+        title: 'Tiếp tục tìm kiếm.',
         type: 'postback',
         payload: '{"subject":"join"}'
     };
     if (friendId) {
-        await sendButtons(friendId, 'Bạn của bạn đã rời phòng !', button);
+        await sendButtons(friendId, 'Đối phương đã rời phòng !', button);
     }
     return sendButtons(psid, 'Bạn đã rời phòng', button);
 }
@@ -90,9 +91,21 @@ function getFriendId(psid, conversation) {
     }
     return undefined;
 }
-
+async function sendUnQueued(psid) {
+    const button = {
+        title: 'Tiếp tục tìm kiếm.',
+        type: 'postback',
+        payload: '{"subject":"join"}'
+    };
+    return sendButtons(psid, 'Bạn đã rời hàng chờ.', button);
+}
 async function sendIsQueueing(psid) {
-    return sendText(psid, 'Bạn đã được đưa vào hàng đợi');
+    const button = {
+        title: 'Ngừng tìm kiếm',
+        type: 'postback',
+        payload: '{"subject":"un-queue"}'
+    };
+    return sendButtons(psid, 'Bạn đã được đưa vào hàng chờ', button);
 }
 
 async function sendFriendNotFound(psid) {
@@ -106,7 +119,7 @@ async function sendUserNotFound(psid) {
 
 async function sendConversationNotFound(psid) {
     const button = {
-        title: 'Tìm tiếp :v',
+        title: 'Tiếp tục tìm kiếm',
         type: 'postback',
         payload: '{"subject":"join"}'
     };

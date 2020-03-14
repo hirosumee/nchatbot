@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 5:50 PM.
+ * LastModifiedAt: 3/14/20, 10:26 PM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendUnQueued } = require('./util');
 const { sendReported } = require('./util');
 const { getFriendId } = require('./util');
 const { sendExceededReportTimes } = require('./util');
@@ -20,7 +21,6 @@ const { sendIsQueueing } = require('./util');
 const { sendUserNotFound } = require('./util');
 const { getUser } = require('./util');
 const { sendLeaveConversation, sendConversationNotFound } = require('./util');
-
 
 module.exports.procPostback = async function(psid, payload) {
     const subject = payload.subject;
@@ -40,6 +40,9 @@ module.exports.procPostback = async function(psid, payload) {
         case 'cmd': {
             return sendCmdList(psid);
         }
+        case 'un-queue': {
+            return unqueue(psid);
+        }
         case 'report': {
             const user = await getUser(psid);
             if (user) {
@@ -51,7 +54,10 @@ module.exports.procPostback = async function(psid, payload) {
 module.exports.join = join;
 module.exports.quit = quit;
 module.exports.report = report;
-
+async function unqueue(psid) {
+    await userModel.setNotQueue(psid);
+    return sendUnQueued(psid);
+}
 async function report(user) {
     const conversation = await conversationModel.getAliveConversation(user.psid);
     if (!conversation) {
@@ -72,7 +78,11 @@ async function setGender(psid, data) {
     const user = await getUser(psid);
     if (user) {
         if (~['male', 'female', 'unknown'].indexOf(data)) {
-            if (!user.lastSetGender || data === 'unknown' || Date.now() - twentyTwoHour > new Date(user.lastSetGender).getTime()) {
+            if (
+                !user.lastSetGender ||
+                data === 'unknown' ||
+                Date.now() - twentyTwoHour > new Date(user.lastSetGender).getTime()
+            ) {
                 user.lastSetGender = new Date();
                 user.gender = data;
                 await user.save();
@@ -121,4 +131,3 @@ async function quit(psid) {
         return sendConversationNotFound(psid);
     }
 }
-
