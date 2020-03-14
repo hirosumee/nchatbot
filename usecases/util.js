@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:38 PM.
+ * LastModifiedAt: 3/14/20, 3:56 PM.
  */
 
 const { callSendAPI } = require('./api');
 const userModel = require('../models/user');
+const { callSendActionAPI } = require('./api');
 const { sendProfileAPI } = require('./api');
 const { getUserInfo } = require('./api');
 // const debug = require('debug')('chatbot:util');
@@ -29,8 +30,23 @@ module.exports.sendSetGenderSuccessful = sendSetGenderSuccessful;
 module.exports.sendBlocking = sendBlocking;
 module.exports.sendExceededReportTimes = sendExceededReportTimes;
 module.exports.sendReported = sendReported;
+module.exports.sendReadStatus = sendReadStatus;
 
-
+async function sendButtons(psid, text, ...buttons) {
+    return callSendAPI(psid, {
+        attachment: {
+            type: 'template',
+            payload: {
+                template_type: 'button',
+                text,
+                buttons
+            }
+        }
+    });
+}
+async function sendReadStatus(psid) {
+    return callSendActionAPI(psid, 'mark_seen');
+}
 async function sendReported(psid) {
     return sendText(psid, 'Bạn đã report thành công !');
 }
@@ -45,19 +61,22 @@ async function sendBlocking(psid, blockDetail) {
 
 async function sendLeaveConversation(psid, conversation) {
     const friendId = getFriendId(psid, conversation);
+    const button = {
+        title: 'Tìm tiếp :v',
+        type: 'postback',
+        payload: '{"subject":"join"}'
+    };
     if (friendId) {
-        await sendText(friendId, 'Bạn của bạn đã rời phòng !');
+        await sendButtons(friendId, 'Bạn của bạn đã rời phòng !', button);
     }
-    return sendText(psid, 'Bạn đã rời phòng');
+    return sendButtons(psid, 'Bạn đã rời phòng', button);
 }
-
 
 async function sendText(psid, message) {
     return callSendAPI(psid, {
         text: message
     });
 }
-
 
 function forwardTextMessage(friendId, message) {
     return sendText(friendId, message);
@@ -81,13 +100,18 @@ async function sendFriendNotFound(psid) {
 }
 
 async function sendUserNotFound(psid) {
-    // return sendText(psid, 'Có lỗi xảy ra: Không khởi tạo được tài khoản !');
-    return sendCmdList(psid);
+    return sendText(psid, 'Có lỗi xảy ra: Không khởi tạo được tài khoản !');
+    // return sendCmdList(psid);
 }
 
 async function sendConversationNotFound(psid) {
-    // return sendText(psid, 'Bạn không ở phòng nào !. Tìm phòng thôi . Hoặc gõ #cmd để xem các lệnh .');
-    return sendCmdList(psid);
+    const button = {
+        title: 'Tìm tiếp :v',
+        type: 'postback',
+        payload: '{"subject":"join"}'
+    };
+    return sendButtons(psid, 'Bạn không ở phòng nào !', button);
+    // return sendCmdList(psid);
 }
 
 function sendNotSupportedGenderSetting(psid) {
@@ -109,34 +133,38 @@ function sendSetGenderSuccessful(psid, gender) {
 }
 
 function sendCmdList(psid) {
-    return sendText(psid, `
+    return sendText(
+        psid,
+        `
 - Tìm phòng: #join
 - Rời phòng: #quit
 - Danh sách lệnh: #cmd
 - Đặt giới tính: #gender
 - Report: #report
-    `);
+    `
+    );
 }
 
 const genderBody = {
     text: 'Chọn giới tính của bạn !. Lưu ý bạn chỉ có thể đổi giới tính 24h/lần',
-    'quick_replies': [
+    quick_replies: [
         {
-            'content_type': 'text',
-            'title': 'Nam',
-            'payload': '{"subject":"set-gender","data":"male"}',
-            'image_url': 'https://ak4.picdn.net/shutterstock/videos/1008672844/thumb/5.jpg'
-        }, {
-            'content_type': 'text',
-            'title': 'Nữ',
-            'payload': '{"subject":"set-gender","data":"female"}',
-            'image_url': 'https://ak4.picdn.net/shutterstock/videos/1021780084/thumb/8.jpg'
+            content_type: 'text',
+            title: 'Nam',
+            payload: '{"subject":"set-gender","data":"male"}',
+            image_url: 'https://ak4.picdn.net/shutterstock/videos/1008672844/thumb/5.jpg'
         },
         {
-            'content_type': 'text',
-            'title': 'Không xác định',
-            'payload': '{"subject":"set-gender","data":"unknown"}',
-            'image_url': 'https://cdn1.iconfinder.com/data/icons/ui-set-6/100/Question_Mark-512.png'
+            content_type: 'text',
+            title: 'Nữ',
+            payload: '{"subject":"set-gender","data":"female"}',
+            image_url: 'https://ak4.picdn.net/shutterstock/videos/1021780084/thumb/8.jpg'
+        },
+        {
+            content_type: 'text',
+            title: 'Không xác định',
+            payload: '{"subject":"set-gender","data":"unknown"}',
+            image_url: 'https://cdn1.iconfinder.com/data/icons/ui-set-6/100/Question_Mark-512.png'
         }
     ]
 };
@@ -144,9 +172,13 @@ const genderBody = {
 function sendSetGender(psid) {
     return callSendAPI(psid, genderBody);
 }
-
 async function sendAlreadyConversation(psid) {
-    return sendText(psid, 'Bạn đã ở trong phòng khác .');
+    const button = {
+        title: 'Rời phòng',
+        type: 'postback',
+        payload: '{"subject":"quit"}'
+    };
+    return sendButtons(psid, 'Bạn đã ở trong phòng khác .', button);
 }
 
 async function sendJoined(psids) {
@@ -174,37 +206,42 @@ async function getUser(psid) {
     return user;
 }
 
-
 async function createPersistentMenu(psid) {
     return sendProfileAPI(psid, {
-        'get_started': {
-            'payload': '{"subject":"cmd"}'
+        get_started: {
+            payload: '{"subject":"cmd"}'
         },
-        'persistent_menu': [
+        persistent_menu: [
             {
-                'locale': 'default',
-                'composer_input_disabled': false,
-                'call_to_actions': [
+                locale: 'default',
+                composer_input_disabled: false,
+                call_to_actions: [
                     {
-                        'title': 'Tìm kiếm phòng',
-                        'type': 'postback',
-                        'payload': '{"subject":"join"}'
+                        title: 'Tìm kiếm phòng',
+                        type: 'postback',
+                        payload: '{"subject":"join"}'
                     },
                     {
-                        'title': 'Rời phòng',
-                        'type': 'postback',
-                        'payload': '{"subject":"quit"}'
+                        title: 'Rời phòng',
+                        type: 'postback',
+                        payload: '{"subject":"quit"}'
                     },
                     {
-                        'title': 'Giới tính',
-                        'type': 'postback',
-                        'payload': '{"subject":"gender"}'
-                    },
-                    // {
-                    //     'title': 'Báo cáo hành vi không chuẩn mực',
-                    //     'type': 'postback',
-                    //     'payload': '{"subject":"report"}'
-                    // }
+                        title: 'Nâng cao',
+                        type: 'nested',
+                        call_to_actions: [
+                            {
+                                title: 'Giới tính',
+                                type: 'postback',
+                                payload: '{"subject":"gender"}'
+                            },
+                            {
+                                title: 'Báo cáo hành vi không chuẩn mực',
+                                type: 'postback',
+                                payload: '{"subject":"report"}'
+                            }
+                        ]
+                    }
                 ]
             }
         ]

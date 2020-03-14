@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 6:34 PM.
+ * LastModifiedAt: 3/14/20, 3:09 PM.
  */
 
 const conversationModel = require('../models/conversation');
+const { sendReadStatus } = require('./util');
 const { sendBlocking, sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
 const { join, report, quit } = require('./postback');
@@ -18,7 +19,19 @@ const { getUser } = require('./util');
 const debug = require('debug')('chatbot:messaging');
 module.exports.procText = procTextMessage;
 module.exports.procAttachment = procAttachMessage;
-
+module.exports.procRead = procRead;
+async function procRead(psid) {
+    const user = await getUser(psid);
+    if (user) {
+        const conversation = await conversationModel.getAliveConversation(psid);
+        if (conversation) {
+            const friendId = getFriendId(psid, conversation);
+            if (friendId) {
+                return sendReadStatus(friendId);
+            }
+        }
+    }
+}
 async function procTextMessage(psid, message) {
     const user = await getUser(psid);
     if (!user) {
@@ -80,5 +93,3 @@ async function procAttachMessage(psid, attachments) {
         await callSendAPI(friendId, { attachment });
     }
 }
-
-

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/12/20, 10:42 PM.
+ * LastModifiedAt: 3/14/20, 3:58 PM.
  */
 
 const express = require('express');
@@ -46,48 +46,27 @@ router
             for (let entry of body.entry) {
                 // Gets the message. entry.messaging is an array, but
                 // will only ever contain one message, so we get index 0
-                if (!entry.messaging) {
-                    continue;
-                }
-                let webhook_event = entry.messaging[0];
-                // console.log(webhook_event);
-                // Get the sender PSID
-                let sender_psid = webhook_event.sender.id;
-                debug('Sender PSID: ' + sender_psid);
-
-                // Check if the event is a message or postback and
-                // pass the event to the appropriate handler function
-                if (webhook_event.message) {
-                    const message = webhook_event.message;
-                    if (message.text) {
-                        if (!message.isEcho) {
-                            if (message.quick_reply) {
-                                const payload = message.quick_reply.payload;
-                                // debug(payload);
-                                const data = isJson(payload);
-                                if (data) {
-                                    await postbackUsecase.procPostback(sender_psid, data);
-                                    continue;
-                                }
-                            }
-                            await messagingUsecase.procText(sender_psid, message);
-                        }
-                    } else if (message.attachments) {
-                        if (!message.isEcho) {
-                            await messagingUsecase.procAttachment(sender_psid, message.attachments);
-                        }
-                    }
-                } else if (webhook_event.postback) {
-                    // handlePostback(sender_psid, webhook_event.postback);
-                    const payload = webhook_event.postback.payload;
-                    // debug(webhook_event.postback);
-                    const data = isJson(payload);
-                    if (data) {
-                        await postbackUsecase.procPostback(sender_psid, data);
+                if (entry.messaging) {
+                    let webhook_event = entry.messaging[0];
+                    // console.log(webhook_event);
+                    // Get the sender PSID
+                    let sender_psid = webhook_event.sender.id;
+                    debug('Sender PSID: ' + sender_psid);
+                    // Check if the event is a message or postback and
+                    // pass the event to the appropriate handler function
+                    if (webhook_event.message) {
+                        await procMessage(sender_psid, webhook_event.message);
+                    } else if (webhook_event.postback) {
+                        await procPostback(sender_psid, webhook_event.postback);
+                    } else if (webhook_event.read) {
+                        debug('read message:', webhook_event.read);
+                        await procReadMessage(sender_psid, webhook_event.read);
+                    } else if (webhook_event.reaction) {
+                        debug('reaction: ', webhook_event.reaction);
+                        await procReaction(sender_psid, webhook_event.reaction);
                     }
                 }
             }
-
             // Returns a '200 OK' response to all requests
             res.status(200).send('EVENT_RECEIVED');
         } else {
@@ -95,7 +74,31 @@ router
             res.sendStatus(404);
         }
     });
-
+async function procMessage(sender_psid, message) {
+    if (message.isEcho) {
+        return;
+    }
+    if (message.text) {
+        if (message.quick_reply) {
+            await procPostback(sender_psid, message.quick_reply);
+        }
+        await messagingUsecase.procText(sender_psid, message);
+    } else if (message.attachments) {
+        await messagingUsecase.procAttachment(sender_psid, message.attachments);
+    }
+}
+async function procPostback(sender_psid, postback) {
+    const payload = postback.payload;
+    // debug(webhook_event.postback);
+    const data = isJson(payload);
+    if (data) {
+        await postbackUsecase.procPostback(sender_psid, data);
+    }
+}
+async function procReadMessage(sender_psid) {
+    return messagingUsecase.procRead(sender_psid);
+}
+async function procReaction(sender_psid, reaction) {}
 function isJson(str) {
     try {
         return JSON.parse(str);
