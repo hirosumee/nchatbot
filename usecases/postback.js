@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 10:26 PM.
+ * LastModifiedAt: 3/14/20, 11:18 PM.
  */
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendGetStarted } = require('./util');
 const { sendUnQueued } = require('./util');
 const { sendReported } = require('./util');
 const { getFriendId } = require('./util');
@@ -42,6 +43,9 @@ module.exports.procPostback = async function(psid, payload) {
         }
         case 'un-queue': {
             return unqueue(psid);
+        }
+        case 'get-started': {
+            return sendGetStarted(psid);
         }
         case 'report': {
             const user = await getUser(psid);

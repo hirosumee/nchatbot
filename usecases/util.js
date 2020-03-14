@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 11:05 PM.
+ * LastModifiedAt: 3/14/20, 11:17 PM.
  */
 
 const { callSendAPI } = require('./api');
@@ -32,6 +32,7 @@ module.exports.sendExceededReportTimes = sendExceededReportTimes;
 module.exports.sendReported = sendReported;
 module.exports.sendReadStatus = sendReadStatus;
 module.exports.sendUnQueued = sendUnQueued;
+module.exports.sendGetStarted = sendGetStarted;
 
 async function sendButtons(psid, title, subtitle, ...buttons) {
     return callSendAPI(psid, {
@@ -68,7 +69,7 @@ async function sendBlocking(psid, blockDetail) {
 async function sendLeaveConversation(psid, conversation) {
     const friendId = getFriendId(psid, conversation);
     const button = {
-        title: 'Tiếp tục tìm kiếm.',
+        title: 'Bắt đầu tìm kiếm',
         type: 'postback',
         payload: '{"subject":"join"}'
     };
@@ -98,7 +99,7 @@ function getFriendId(psid, conversation) {
 }
 async function sendUnQueued(psid) {
     const button = {
-        title: 'Tiếp tục tìm kiếm.',
+        title: 'Bắt đầu tìm kiếm.',
         type: 'postback',
         payload: '{"subject":"join"}'
     };
@@ -124,7 +125,7 @@ async function sendUserNotFound(psid) {
 
 async function sendConversationNotFound(psid) {
     const button = {
-        title: 'Tiếp tục tìm kiếm',
+        title: 'Bắt đầu tìm kiếm',
         type: 'postback',
         payload: '{"subject":"join"}'
     };
@@ -149,18 +150,34 @@ function sendSetGenderSuccessful(psid, gender) {
     }
     return sendText(psid, 'Đặt lại giới tính thành công. Hiện tại giới tính của bạn là : ' + nGender);
 }
+const cmds = [
+    {
+        title: 'Tìm kiếm phòng',
+        type: 'postback',
+        payload: '{"subject":"join"}'
+    },
+    {
+        title: 'Rời phòng',
+        type: 'postback',
+        payload: '{"subject":"quit"}'
+    },
+    {
+        title: 'Đặt giới tính',
+        type: 'postback',
+        payload: '{"subject":"gender"}'
+    }
+];
 
 function sendCmdList(psid) {
-    return sendText(
-        psid,
-        `
-- Tìm phòng: #join
-- Rời phòng: #quit
-- Danh sách lệnh: #cmd
-- Đặt giới tính: #gender
-- Report: #report
-    `
-    );
+    return sendButtons(psid, `Danh sách lệnh hiện tại`, 'Bạn có thể nhấn hoăc gõ lệnh', ...cmds);
+}
+function sendGetStarted(psid) {
+    const button = {
+        title: 'Bắt đầu',
+        type: 'postback',
+        payload: '{"subject":"join"}'
+    };
+    return sendButtons(psid, 'Bắt đầu tìm bạn .', 'Bạn có thể gõ #cmd để lấy danh sách lệnh', button);
 }
 
 const genderBody = {
@@ -227,7 +244,7 @@ async function getUser(psid) {
 async function createPersistentMenu(psid) {
     return sendProfileAPI(psid, {
         get_started: {
-            payload: '{"subject":"cmd"}'
+            payload: '{"subject":"get-started"}'
         },
         persistent_menu: [
             {
