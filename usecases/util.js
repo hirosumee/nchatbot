@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 11:17 PM.
+ * LastModifiedAt: 3/15/20, 9:53 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -129,7 +129,7 @@ async function sendConversationNotFound(psid) {
         type: 'postback',
         payload: '{"subject":"join"}'
     };
-    return sendButtons(psid, 'Bạn không ở phòng nào !', 'Hãy bắt đầu trò truyện với lệnh #join', button);
+    return sendButtons(psid, 'Bạn không ở phòng nào !', 'Hoặc bắt đầu trò truyện với lệnh #join', button);
     // return sendCmdList(psid);
 }
 
@@ -221,6 +221,19 @@ async function sendJoined(psids) {
         await sendText(psid, 'Tìm thấy nhau rồi. Chào nhau đi nào !!');
     }
 }
+async function sendGenderNotFound(psid) {
+    const button = {
+        title: 'Cài đặt ngay',
+        type: 'postback',
+        payload: '{"subject":"gender"}'
+    };
+    return sendButtons(
+        psid,
+        'Chúng tôi không thể xác định giới tính của bạn.',
+        'Dự trên giới tính bạn có thể tìm thấy bạn dễ dàng hơn',
+        button
+    );
+}
 
 async function getUser(psid) {
     let user = await userModel.findOne({ psid });
@@ -233,6 +246,9 @@ async function getUser(psid) {
             return undefined;
         }
         try {
+            if (!user.gender || user.gender === 'unknown') {
+                await sendGenderNotFound(psid);
+            }
             await createPersistentMenu(psid);
         } catch (e) {
             console.error(e);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 10:45 PM.
+ * LastModifiedAt: 3/15/20, 9:28 AM.
  */
 
 const axios = require('axios');
@@ -19,7 +19,8 @@ async function getUserInfo(user_psid) {
             method: 'GET',
             url: '/v6.0/' + user_psid,
             params: {
-                access_token: token
+                access_token: token,
+                fields: 'id,name,first_name,last_name,profile_pic,gender'
             }
         });
         return resp.data;
