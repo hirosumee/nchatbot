@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 10:03 PM.
+ * LastModifiedAt: 3/15/20, 8:50 AM.
  */
 
 const mongoose = require('mongoose');
@@ -71,7 +71,7 @@ schema.statics.findFriend = async function(psid, gender) {
         genderQuery.gender = 'male';
     }
     const resp = await this.find({ psid: { $ne: psid }, queuing: true, block: false, ...genderQuery })
-        .sort({ updatedAt: 1 })
+        .sort({ updatedAt: -1 })
         .limit(1)
         .exec();
     return resp[0];
