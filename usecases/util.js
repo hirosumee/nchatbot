@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/15/20, 9:53 AM.
+ * LastModifiedAt: 3/15/20, 10:05 AM.
  */
 
 const { callSendAPI } = require('./api');
@@ -160,11 +160,6 @@ const cmds = [
         title: 'Rời phòng',
         type: 'postback',
         payload: '{"subject":"quit"}'
-    },
-    {
-        title: 'Đặt giới tính',
-        type: 'postback',
-        payload: '{"subject":"gender"}'
     }
 ];
 
