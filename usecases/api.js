@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/15/20, 9:28 AM.
+ * LastModifiedAt: 3/15/20, 5:55 PM.
  */
 
 const axios = require('axios');
@@ -41,7 +41,7 @@ async function callSendActionAPI(sender_psid, sender_action) {
     // debug('try to send message to :', sender_psid);
     // Send the HTTP request to the Messenger Platform
     axios({
-        baseURL: 'https://graph.facebook.com/v2.6/me/messages',
+        baseURL: 'https://graph.facebook.com/v6.0/me/messages',
         params: {
             access_token: token
         },
@@ -53,8 +53,8 @@ async function callSendActionAPI(sender_psid, sender_action) {
             return true;
         })
         .catch(function(err) {
-            debug(err);
             debug(err.response);
+            if (!err.response) return err.response;
             return err.response.data.error.code;
         });
 }
@@ -79,7 +79,7 @@ async function callSendAPI(recipient_psid, response, depth = 0) {
     // debug('try to send message to :', sender_psid);
     // Send the HTTP request to the Messenger Platform
     return axios({
-        baseURL: 'https://graph.facebook.com/v2.6/me/messages',
+        baseURL: 'https://graph.facebook.com/v6.0/me/messages',
         params: {
             access_token: token
         },
@@ -91,12 +91,16 @@ async function callSendAPI(recipient_psid, response, depth = 0) {
             return 0;
         })
         .catch(function(err) {
+            if (!err.response) {
+                debug(err);
+                return 1000;
+            }
             let error = err.response.data.error;
             debug(error);
             debug(request_body);
             if (error.code === 10) {
                 //resend
-                return callSendAPI(token, recipient_psid, response, depth + 1);
+                return callSendAPI(recipient_psid, response, depth + 1);
             }
             return err.response.data.error.code;
         });
@@ -112,7 +116,10 @@ function sendProfileAPI(psid, data) {
             // debug('send profile');
         })
         .catch(function(err) {
-            debug(err);
-            debug(err.response);
+            if (!err.response) {
+                debug(err);
+                return;
+            }
+            debug(err.response.error);
         });
 }

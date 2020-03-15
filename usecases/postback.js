@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020.
  * Author: hirosume.
- * LastModifiedAt: 3/14/20, 11:18 PM.
+ * LastModifiedAt: 3/15/20, 6:00 PM.
  */
 
 const conversationModel = require('../models/conversation');
@@ -68,7 +68,7 @@ async function report(user) {
         return sendConversationNotFound(user.psid);
     }
     if (await user.canReport()) {
-        const friendId = getFriendId(user.psid, conversation.members);
+        const friendId = getFriendId(user.psid, conversation);
         await userModel.findAndReport(friendId);
         return await sendReported(user.psid);
     } else {
