@@ -56,6 +56,7 @@ const time_map = {
     11: '18h'
 };
 async function getSemester(psid, student_id, mode) {
+    student_id = student_id.toUpperCase();
     const data = _getSemesterFromAPI(student_id, mode);
     if (Array.isArray(data)) {
         let ms = data
