@@ -60,6 +60,8 @@ async function procTextMessage(psid, message) {
         return sendSetGender(psid);
     } else if (text === '#report') {
         return report(user);
+    } else if (text === '#desemester') {
+        return semester.deregister(user);
     }
     if (text.startsWith('#semester')) {
         const student_id = text.split(' ')[1];
