@@ -37,7 +37,7 @@ async function _getSemesterFromAPI(student_id, mode) {
         return false;
     }
     try {
-        const response = await axios.post(process.env.SEMESTER_API_URL, {
+        const response = await axios.post(APIURL, {
             student_id,
             mode
         });

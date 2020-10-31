@@ -62,7 +62,7 @@ module.exports.procPostback = async function(psid, payload) {
                 if (!user.student_id) {
                     return sendNotSubscribeAnyStudentID(psid);
                 }
-                return getSemester(psid, payload.data);
+                return getSemester(user.psid, user.student_id, payload.data);
             }
         }
     }
