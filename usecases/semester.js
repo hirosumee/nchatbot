@@ -19,7 +19,7 @@ module.exports.register = register;
 
 async function deregister(user) {
     const message = `Bạn đã tắt thông báo thời khóa biểu`;
-    await user.unregisterFromStudentID()
+    await user.unregisterFromStudentID();
     await sendText(user.psid, message);
 }
 
@@ -58,6 +58,7 @@ const time_map = {
 async function getSemester(psid, student_id, mode) {
     student_id = student_id.toUpperCase();
     const data = _getSemesterFromAPI(student_id, mode);
+    console.log(student_id, data);
     if (Array.isArray(data)) {
         let ms = data
             .map(
@@ -80,9 +81,11 @@ const job = new CronJob(
         try {
             const users = userModel.findRegistedStudents();
             if (Array.isArray(users)) {
-                users.filter(u => u.student_id).forEach(user => {
-                    getSemester(user.psid, user.student_id, "today")
-                });
+                users
+                    .filter(u => u.student_id)
+                    .forEach(user => {
+                        getSemester(user.psid, user.student_id, 'today');
+                    });
             }
         } catch (e) {
             console.log(e);
