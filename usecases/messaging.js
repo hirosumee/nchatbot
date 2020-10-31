@@ -5,6 +5,8 @@
  */
 
 const conversationModel = require('../models/conversation');
+const semester = require('./semester');
+const { sendDaysOfWeekForSemester } = require('./util');
 const { sendReadStatus } = require('./util');
 const { sendBlocking, sendSetGender } = require('./util');
 const { sendCmdList } = require('./util');
@@ -58,6 +60,16 @@ async function procTextMessage(psid, message) {
         return sendSetGender(psid);
     } else if (text === '#report') {
         return report(user);
+    }
+    if (text.startsWith('#semester')) {
+        const student_id = text.split(' ')[1];
+        if (!student_id) {
+            // send list
+            return sendDaysOfWeekForSemester(psid);
+        }
+        if (semester.isPTITStudentID(student_id)) {
+            return semester.register(user, student_id);
+        }
     }
     const conversation = await conversationModel.getAliveConversation(psid);
     if (!conversation) {

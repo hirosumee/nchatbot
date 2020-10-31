@@ -6,6 +6,7 @@
 
 const conversationModel = require('../models/conversation');
 const userModel = require('../models/user');
+const { sendNotSubscribeAnyStudentID } = require('./util');
 const { sendGetStarted } = require('./util');
 const { sendUnQueued } = require('./util');
 const { sendReported } = require('./util');
@@ -22,6 +23,7 @@ const { sendIsQueueing } = require('./util');
 const { sendUserNotFound } = require('./util');
 const { getUser } = require('./util');
 const { sendLeaveConversation, sendConversationNotFound } = require('./util');
+const { get: getSemester } = require('./semester');
 
 module.exports.procPostback = async function(psid, payload) {
     const subject = payload.subject;
@@ -51,6 +53,16 @@ module.exports.procPostback = async function(psid, payload) {
             const user = await getUser(psid);
             if (user) {
                 return report(user);
+            }
+            return;
+        }
+        case 'semester': {
+            const user = await getUser(psid);
+            if (user) {
+                if (!user.student_id) {
+                    return sendNotSubscribeAnyStudentID(psid);
+                }
+                return getSemester(psid, payload.data);
             }
         }
     }

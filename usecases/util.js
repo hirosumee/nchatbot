@@ -33,6 +33,8 @@ module.exports.sendReported = sendReported;
 module.exports.sendReadStatus = sendReadStatus;
 module.exports.sendUnQueued = sendUnQueued;
 module.exports.sendGetStarted = sendGetStarted;
+module.exports.sendDaysOfWeekForSemester = sendDaysOfWeekForSemester;
+module.exports.sendNotSubscribeAnyStudentID = sendNotSubscribeAnyStudentID;
 
 async function sendButtons(psid, title, subtitle, ...buttons) {
     return callSendAPI(psid, {
@@ -47,6 +49,18 @@ async function sendButtons(psid, title, subtitle, ...buttons) {
                         buttons
                     }
                 ]
+            }
+        }
+    });
+}
+async function sendButtons2(psid, text, ...buttons) {
+    return callSendAPI(psid, {
+        attachment: {
+            type: 'template',
+            payload: {
+                template_type: 'button',
+                text,
+                buttons
             }
         }
     });
@@ -292,4 +306,55 @@ async function createPersistentMenu(psid) {
             }
         ]
     });
+}
+
+const smd_buttons = [
+    {
+        title: 'Hôm nay',
+        type: 'postback',
+        payload: '{"subject":"semester", "data": "today"}'
+    },
+    {
+        title: 'Cả tuần',
+        type: 'postback',
+        payload: '{"subject":"semester", "data": "all"}'
+    }
+    // {
+    //     title: 'Thứ 3',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 2}'
+    // },
+    // {
+    //     title: 'Thứ 4',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 3}'
+    // },
+    // {
+    //     title: 'Thứ 5',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 4}'
+    // },
+    // {
+    //     title: 'Thứ 6',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 5}'
+    // },
+    // {
+    //     title: 'Thứ 7',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 6}'
+    // },
+    // {
+    //     title: 'CN',
+    //     type: 'postback',
+    //     payload: '{"subject":"semester", "data": 0}'
+    // }
+];
+
+async function sendDaysOfWeekForSemester(psid) {
+    return sendButtons2(psid, 'Chọn 1 ngày để xem TKB', ...smd_buttons);
+}
+
+async function sendNotSubscribeAnyStudentID(psid) {
+    return sendText(psid, 'Bạn chưa đăng ký với bất cứ MSV nào');
 }

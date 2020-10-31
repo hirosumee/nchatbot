@@ -12,6 +12,7 @@ const schema = new mongoose.Schema(
         first_name: String,
         last_name: String,
         profile_pic: String,
+        student_id: String,
         gender: {
             type: String,
             default: 'unknown'
@@ -86,6 +87,9 @@ schema.statics.findAndReport = async function(psid) {
     }
     return undefined;
 };
+schema.statics.findRegistedStudents = async function() {
+    return this.find({ student_id: { $exists: true } }).exec();
+};
 schema.methods.isBlock = function() {
     return this.block;
 };
@@ -109,6 +113,10 @@ schema.methods.canReport = async function() {
         }
     }
     return this.reportTimes <= 2;
+};
+schema.methods.unregisterFromStudentID = async function() {
+    this.student_id = undefined;
+    await this.save();
 };
 
 function isInDifferenceDay(lDate, nDate) {
