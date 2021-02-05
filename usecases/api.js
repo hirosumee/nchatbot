@@ -95,13 +95,13 @@ async function callSendAPI(recipient_psid, response, depth = 0) {
                 debug(err);
                 return 1000;
             }
-            let error = err.response.data.error;
-            debug(error);
-            debug(request_body);
-            if (error.code === 10) {
-                //resend
-                return callSendAPI(recipient_psid, response, depth + 1);
-            }
+            // let error = err.response.data.error;
+            // debug(error);
+            // debug(request_body);
+            // if (error.code === 10) {
+            //     //resend
+            //     return callSendAPI(recipient_psid, response, depth + 1);
+            // }
             return err.response.data.error.code;
         });
 }
