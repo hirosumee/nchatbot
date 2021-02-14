@@ -88,7 +88,7 @@ async function callSendAPI(recipient_psid, response, depth = 0) {
     })
         .then(function() {
             // debug('sent to facebook :', sender_psid);
-            return 0;
+            return null;
         })
         .catch(function(err) {
             if (!err.response) {

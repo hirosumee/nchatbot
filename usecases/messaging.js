@@ -81,7 +81,7 @@ async function procTextMessage(psid, message) {
     if (!friendId) {
         return sendFriendNotFound(psid);
     }
-    return forwardTextMessage(friendId, message.text);
+    return forwardTextMessage(friendId, message.text, psid);
 }
 
 async function procAttachMessage(psid, attachments) {

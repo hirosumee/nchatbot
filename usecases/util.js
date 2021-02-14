@@ -99,8 +99,11 @@ async function sendText(psid, message) {
     });
 }
 
-function forwardTextMessage(friendId, message) {
-    return sendText(friendId, message);
+async function forwardTextMessage(friendId, message, psid) {
+    const response = await sendText(friendId, message);
+    if (response) {
+        return sendText(psid, 'Không thể chuyển phát tin nhắn của bạn: ' + response);
+    }
 }
 
 function getFriendId(psid, conversation) {
@@ -227,7 +230,11 @@ async function sendAlreadyConversation(psid) {
 
 async function sendJoined(psids) {
     for (let psid of psids) {
-        await sendText(psid, 'Tìm thấy nhau rồi. Chào nhau đi nào !!');
+        await sendText(
+            psid,
+            'Tìm thấy nhau rồi. Chào nhau đi nào !! \n' +
+                'Lưu ý: Sau 24h không phát sinh tin nhắn đối phương sẽ k nhận được tin nhắn :('
+        );
     }
 }
 async function sendGenderNotFound(psid) {
