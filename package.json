@@ -11,7 +11,7 @@
     "cron": "1.6.0",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "express-x-hub": "^1.0.4",
     "moment": "^2.29.1",
     "mongoose": "^5.9.4",
